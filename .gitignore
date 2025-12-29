@@ -51,6 +51,7 @@ credentials.json
 # ============================================
 /informes/
 /logs/
+/imagenes_obras/
 *.pdf
 *.xlsx
 *.csv
