@@ -50,12 +50,12 @@ def main():
         description="Generador automatizado de informes PDF para obras públicas",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Ejemplos de uso:
-  python run.py                                    # Ejecutar con configuración por defecto
-  python run.py --filter OTRAS                    # Solo obras con prefijo 'OTRAS-'
-  python run.py --excel mi_archivo.xlsx           # Usar archivo Excel específico
-  python run.py --output mis_informes/            # Cambiar directorio de salida
-  python run.py --help                            # Ver todas las opciones
+        Ejemplos de uso:
+        python run.py                                    # Ejecutar con configuración por defecto
+        python run.py --filter OTRAS                    # Solo obras con prefijo 'OTRAS-'
+        python run.py --excel mi_archivo.xlsx           # Usar archivo Excel específico
+        python run.py --output mis_informes/            # Cambiar directorio de salida
+        python run.py --help                            # Ver todas las opciones
         """
     )
     

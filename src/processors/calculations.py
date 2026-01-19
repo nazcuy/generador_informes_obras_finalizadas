@@ -151,7 +151,7 @@ class CalculosFinancieros:
             return DataFormatters.formatear_numero(restantes)
             
         except Exception as e:
-            logger.warning(f"Error calculando viviendas restantes: {e} | Total: {total_viviendas}, Entregadas: {delivered_viviendas}")
+            logger.warning(f"Error calculando viviendas restantes: {e} | Total: {total_viviendas}, Entregadas: {viv_entregadas}")
             return "--"
     
     @staticmethod
