@@ -120,25 +120,25 @@ class CalculosFinancieros:
             return "--"
     
     @staticmethod
-    def calculo_viviendas_restantes(total_viviendas: Union[str, float, int], delivered_viviendas: Union[str, float, int]) -> str:
+    def calculo_viviendas_restantes(total_viviendas: Union[str, float, int], viv_entregadas: Union[str, float, int]) -> str:
         """
         Calcula viviendas restantes: total - entregadas.
         
         Args:
             total_viviendas: Total de viviendas del proyecto
-            delivered_viviendas: Viviendas ya entregadas
+            viv_entregadas: Viviendas ya entregadas
             
         Returns:
             String formateado con viviendas restantes
         """
         try:
             if (CalculosFinancieros._esta_vacio(total_viviendas) or 
-                CalculosFinancieros._esta_vacio(delivered_viviendas)):
+                CalculosFinancieros._esta_vacio(viv_entregadas)):
                 return "--"
             
             # Limpiar y convertir
             total_clean = CalculosFinancieros._numero_limpio(total_viviendas)
-            delivered_clean = CalculosFinancieros._numero_limpio(delivered_viviendas)
+            delivered_clean = CalculosFinancieros._numero_limpio(viv_entregadas)
             
             # Calcular restantes
             restantes = total_clean - delivered_clean

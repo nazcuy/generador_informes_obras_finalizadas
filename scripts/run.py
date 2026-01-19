@@ -167,7 +167,12 @@ Ejemplos de uso:
                 obra_procesada['Avance_Restante'] = CalculosFinancieros.calculate_progreso_restante(
                     obra.get('Avance_fisico', '--')
                 )
-            
+            # Calcular viviendas restantes
+            obra_procesada['Viviendas_Restantes'] = CalculosFinancieros.calculo_viviendas_restantes(
+                total_viviendas=obra.get('Viviendas_Totales', '--'),
+                viv_entregadas=obra.get('viv_entregadas', '--')
+            )
+                
             # Asegurar que Saldo_Obra_Actualizado esté presente
             if 'Saldo_Obra_Actualizado' not in obra_procesada:
                 obra_procesada['Saldo_Obra_Actualizado'] = "--"
