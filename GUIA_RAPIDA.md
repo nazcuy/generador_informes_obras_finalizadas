@@ -42,7 +42,7 @@ python scripts/run.py
 ## 🎯 Archivos necesarios
 
 ### En la raíz del proyecto:
-- `pdf_generator_3000_paralizadas.xlsx` (tu archivo de datos)
+- `pdf_generator_3000_paralizadas.xlsx` (archivo de datos)
 - `imagenes_obras/` (carpeta con fotos de obras)
 
 ### En `assets/`:

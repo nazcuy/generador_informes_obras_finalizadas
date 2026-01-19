@@ -15,7 +15,7 @@ class CalculosFinancieros:
     """Cálculos financieros específicos del dominio"""
     
     @staticmethod
-    def calculate_remaining_uvi(total_uvi: Union[str, float, int], paid_uvi: Union[str, float, int]) -> str:
+    def calculate_restantes_uvi(total_uvi: Union[str, float, int], paid_uvi: Union[str, float, int]) -> str:
         """
         Calcula UVIs restantes: total - pagado.
         
@@ -35,21 +35,21 @@ class CalculosFinancieros:
             paid_clean = CalculosFinancieros._numero_limpio(paid_uvi)
             
             # Calcular restantes
-            remaining = total_clean - paid_clean
+            restantes = total_clean - paid_clean
             
             # Asegurar que no sea negativo
-            remaining = max(0, remaining)
+            restantes = max(0, restantes)
             
             # Formatear como moneda sin decimales
             from .formatters import DataFormatters
-            return DataFormatters.formatear_numero(remaining)
+            return DataFormatters.formatear_numero(restantes)
             
         except Exception as e:
             logger.warning(f"Error calculando UVIs restantes: {e} | Total: {total_uvi}, Pagado: {paid_uvi}")
             return "--"
     
     @staticmethod
-    def calculate_remaining_amount(updated_amount: Union[str, float, int], paid_amount: Union[str, float, int]) -> str:
+    def calculate_restantes_amount(updated_amount: Union[str, float, int], paid_amount: Union[str, float, int]) -> str:
         """
         Calcula monto restante: monto_actualizado - monto_pagado.
         
@@ -70,21 +70,21 @@ class CalculosFinancieros:
             paid_clean = CalculosFinancieros._numero_limpio(paid_amount)
             
             # Calcular restantes
-            remaining = updated_clean - paid_clean
+            restantes = updated_clean - paid_clean
             
             # Asegurar que no sea negativo
-            remaining = max(0, remaining)
+            restantes = max(0, restantes)
             
             # Formatear como moneda sin decimales
             from .formatters import DataFormatters
-            return DataFormatters.formatear_moneda_sin_decimales(remaining)
+            return DataFormatters.formatear_moneda_sin_decimales(restantes)
             
         except Exception as e:
             logger.warning(f"Error calculando monto restante: {e} | Actualizado: {updated_amount}, Pagado: {paid_amount}")
             return "--"
     
     @staticmethod
-    def calculate_remaining_progress(current_progress: Union[str, float, int]) -> str:
+    def calculate_restantes_progress(current_progress: Union[str, float, int]) -> str:
         """
         Calcula progreso restante: 100% - progreso_actual.
         
@@ -106,21 +106,21 @@ class CalculosFinancieros:
                 progress_clean *= 100
             
             # Calcular restante
-            remaining = 100 - progress_clean
+            restantes = 100 - progress_clean
             
             # Asegurar que esté entre 0 y 100
-            remaining = max(0, min(100, remaining))
+            restantes = max(0, min(100, restantes))
             
             # Formatear como porcentaje
             from .formatters import DataFormatters
-            return DataFormatters.formatear_porcentaje(remaining)
+            return DataFormatters.formatear_porcentaje(restantes)
             
         except Exception as e:
             logger.warning(f"Error calculando progreso restante: {e} | Actual: {current_progress}")
             return "--"
     
     @staticmethod
-    def calculate_remaining_houses(total_houses: Union[str, float, int], delivered_houses: Union[str, float, int]) -> str:
+    def calculate_restantes_houses(total_houses: Union[str, float, int], delivered_houses: Union[str, float, int]) -> str:
         """
         Calcula viviendas restantes: total - entregadas.
         
@@ -141,14 +141,14 @@ class CalculosFinancieros:
             delivered_clean = CalculosFinancieros._numero_limpio(delivered_houses)
             
             # Calcular restantes
-            remaining = total_clean - delivered_clean
+            restantes = total_clean - delivered_clean
             
             # Asegurar que no sea negativo
-            remaining = max(0, remaining)
+            restantes = max(0, restantes)
             
             # Formatear como número
             from .formatters import DataFormatters
-            return DataFormatters.formatear_numero(remaining)
+            return DataFormatters.formatear_numero(restantes)
             
         except Exception as e:
             logger.warning(f"Error calculando viviendas restantes: {e} | Total: {total_houses}, Entregadas: {delivered_houses}")
