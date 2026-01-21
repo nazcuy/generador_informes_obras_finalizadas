@@ -5,7 +5,7 @@ Lector especializado para archivos Excel.
 from __future__ import annotations
 
 import pandas as pd
-from typing import Optional, List
+from typing import Optional, List, Union
 from pathlib import Path
 
 from config.constants import Config
@@ -15,6 +15,50 @@ logger = setup_logging(__name__)
 
 class ExcelReader:
     """Lector especializado para archivos Excel"""
+
+    @staticmethod
+    def _resolve_sheet_name(file_path: str, preferred_names: List[str], fallback_index: int) -> Union[str, int]:
+        """
+        Resuelve el nombre de hoja a leer.
+
+        - Intenta encontrar una hoja por nombre (case-insensitive) dentro de preferred_names
+        - Si no la encuentra, usa el índice fallback_index si existe
+        - Si tampoco existe, usa la primera hoja
+        """
+        xls = pd.ExcelFile(file_path, engine='openpyxl')
+        name_map = {str(n).strip().lower(): n for n in xls.sheet_names}
+
+        for pref in preferred_names:
+            key = str(pref).strip().lower()
+            if key in name_map:
+                return name_map[key]
+
+        if 0 <= fallback_index < len(xls.sheet_names):
+            return xls.sheet_names[fallback_index]
+
+        return xls.sheet_names[0]
+
+    @staticmethod
+    def read_obras(path: Optional[str] = None) -> pd.DataFrame:
+        """
+        Lee la pestaña 1 del Excel (obras).
+        Preferencia: hoja llamada 'obras' (case-insensitive). Fallback: primera hoja.
+        """
+        file_path = path or Config.EXCEL_PATH
+        sheet = ExcelReader._resolve_sheet_name(file_path, preferred_names=["obras"], fallback_index=0)
+        logger.info(f"[>] Leyendo Excel (obras): {file_path} | hoja: {sheet}")
+        return pd.read_excel(file_path, sheet_name=sheet, engine='openpyxl')
+
+    @staticmethod
+    def read_pagos(path: Optional[str] = None) -> pd.DataFrame:
+        """
+        Lee la pestaña 2 del Excel (pagos).
+        Preferencia: hoja llamada 'pagos' (case-insensitive). Fallback: segunda hoja.
+        """
+        file_path = path or Config.EXCEL_PATH
+        sheet = ExcelReader._resolve_sheet_name(file_path, preferred_names=["pagos"], fallback_index=1)
+        logger.info(f"[>] Leyendo Excel (pagos): {file_path} | hoja: {sheet}")
+        return pd.read_excel(file_path, sheet_name=sheet, engine='openpyxl')
     
     @staticmethod
     def read_excel(path: Optional[str] = None) -> pd.DataFrame:
@@ -34,8 +78,8 @@ class ExcelReader:
         file_path = path or Config.EXCEL_PATH
         
         try:
-            logger.info(f"[>] Leyendo Excel: {file_path}")
-            df = pd.read_excel(file_path, engine='openpyxl')
+            # Compatibilidad: por defecto leemos la pestaña de obras
+            df = ExcelReader.read_obras(file_path)
             logger.info(f"[OK] Excel cargado: {len(df)} registros")
             return df
             

@@ -18,7 +18,7 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 IMAGENES_OBRAS_DIR = BASE_DIR / "imagenes_obras"
 
 # Archivos específicos
-DEFAULT_EXCEL = "pdf_generator_3000_paralizadas.xlsx"
+DEFAULT_EXCEL = "pdf_generator_3000_finalizadas.xlsx"
 OUTPUT_DIR = "informes"
 
 # Configuración de clases de archivo

@@ -105,7 +105,8 @@ def main():
         logger.info("[1/4] 📥 Cargando datos...")
         
         # Leer Excel
-        df_excel = ExcelReader.read_excel(args.excel)
+        df_excel = ExcelReader.read_obras(args.excel)
+        df_pagos = ExcelReader.read_pagos(args.excel)
         
         # Leer Google Sheets si está configurado
         df_sheets = SheetsReader.read_if_configured()
@@ -209,7 +210,7 @@ def main():
             logger.info(f"[SIMULACIÓN] Directorio: {args.output}")
         else:
             # Crear generador de PDFs
-            generator = PDFGenerator(resources, args.output)
+            generator = PDFGenerator(resources, args.output, pagos_df=df_pagos)
             
             # Generar todos los PDFs
             generator.generate_all(df_combined, args.filter)

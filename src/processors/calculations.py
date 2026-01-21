@@ -15,37 +15,76 @@ class CalculosFinancieros:
     """Cálculos financieros específicos del dominio"""
     
     @staticmethod
-    def calcular_uvi_restantes(total_uvi: Union[str, float, int], paid_uvi: Union[str, float, int]) -> str:
+    def calcular_uvi_restantes(
+        cantidad_uvis: Union[str, float, int],
+        porcentaje_avance_fisico: Union[str, float, int],
+        uvi_restante_sheet: Union[str, float, int, None] = None
+    ) -> str:
         """
-        Calcula UVIs restantes: total - pagado.
+        Obtiene UVIs Restantes para el informe.
+
+        Reglas:
+        1) Si existe un valor en Google Sheets en la columna "UVI Restante" (uvi_restante_sheet),
+           se utiliza ese valor tal cual (formateado como número).
+        2) Si no existe, se calcula a partir de los campos del Excel:
+           UVIs_Restantes = cantidad_uvis * (1 - avance_fisico)
+
+           donde avance_fisico puede venir como:
+           - fracción (0..1)  -> restante = 1 - avance
+           - porcentaje (0..100) -> restante = (100 - avance) / 100
         
         Args:
-            total_uvi: Total de UVIs del convenio
-            paid_uvi: UVIs ya pagadas
+            cantidad_uvis: Total de UVIs del convenio (Excel: "cantidad_uvis")
+            porcentaje_avance_fisico: Avance físico (Excel: "porcentaje_avance_fisico")
+            uvi_restante_sheet: Valor opcional desde Google Sheets (columna "UVI Restante")
             
         Returns:
-            String formateado con UVIs restantes
+            String formateado con UVIs restantes, o "--" si no hay datos
         """
         try:
-            if CalculosFinancieros._esta_vacio(total_uvi) or CalculosFinancieros._esta_vacio(paid_uvi):
-                return "--"
-            
-            # Limpiar y convertir
-            total_clean = CalculosFinancieros._numero_limpio(total_uvi)
-            paid_clean = CalculosFinancieros._numero_limpio(paid_uvi)
-            
-            # Calcular restantes
-            restantes = total_clean - paid_clean
-            
-            # Asegurar que no sea negativo
-            restantes = max(0, restantes)
-            
-            # Formatear como moneda sin decimales
             from .formatters import DataFormatters
+
+            # 1) Prioridad: Google Sheets (UVI Restante)
+            if not CalculosFinancieros._esta_vacio(uvi_restante_sheet):
+                sheet_clean = CalculosFinancieros._numero_limpio(uvi_restante_sheet)
+                sheet_clean = max(0, sheet_clean)
+                return DataFormatters.formatear_numero(sheet_clean)
+
+            # 2) Fallback: cálculo por avance físico desde Excel
+            if (CalculosFinancieros._esta_vacio(cantidad_uvis) or
+                CalculosFinancieros._esta_vacio(porcentaje_avance_fisico)):
+                return "--"
+
+            total_clean = CalculosFinancieros._numero_limpio(cantidad_uvis)
+
+            # Limpiar porcentaje (puede venir con %)
+            avance_value = porcentaje_avance_fisico
+            if isinstance(avance_value, str):
+                avance_value = avance_value.strip().replace('%', '')
+            avance_clean = CalculosFinancieros._numero_limpio(avance_value)
+
+            # Calcular fracción restante según escala de avance
+            if 0 <= avance_clean <= 1:
+                fraccion_restante = 1 - avance_clean
+            elif 0 <= avance_clean <= 100:
+                fraccion_restante = (100 - avance_clean) / 100
+            else:
+                logger.warning(
+                    f"Avance físico fuera de rango para UVIs restantes: {porcentaje_avance_fisico}"
+                )
+                return "--"
+
+            restantes = total_clean * fraccion_restante
+            restantes = max(0, restantes)
             return DataFormatters.formatear_numero(restantes)
             
         except Exception as e:
-            logger.warning(f"Error calculando UVIs restantes: {e} | Total: {total_uvi}, Pagado: {paid_uvi}")
+            logger.warning(
+                "Error calculando UVIs restantes: "
+                f"{e} | cantidad_uvis: {cantidad_uvis}, "
+                f"avance_fisico: {porcentaje_avance_fisico}, "
+                f"uvi_restante_sheet: {uvi_restante_sheet}"
+            )
             return "--"
     
     @staticmethod
