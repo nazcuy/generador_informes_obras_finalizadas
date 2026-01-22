@@ -344,15 +344,23 @@
                         <td class="campo-pagos">Devengado</td>
                         <td class="campo-pagos">Fecha de Pago</td>
                     </tr>
+                    {% if pagos_lista %}
+                        {% for pago in pagos_lista %}
                     <tr>
-                        <td class="valor-pagos">{{ Nro_Certificado }}</td>
-                        <td class="valor-pagos">{{ Expediente }}</td>
-                        <td class="valor-pagos">{{ Nro_Operatoria }}</td>
-                        <td class="valor-pagos">{{ Contratista }}</td>
-                        <td class="valor-pagos">{{ Estado_Pago }}</td>
-                        <td class="valor-pagos">{{ Devengado }}</td>
-                        <td class="valor-pagos">{{ Fecha_Pago }}</td>
+                        <td class="valor-pagos">{{ pago.nro_certificado or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.expediente or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.nro_operatoria or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.contratista or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.estado_pago or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.devengado or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.fecha_pago or "--" }}</td>
                     </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td class="valor-pagos" colspan="7">No hay registros de pagos disponibles.</td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
