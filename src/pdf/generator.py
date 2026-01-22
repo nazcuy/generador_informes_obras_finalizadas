@@ -76,6 +76,9 @@ class PDFGenerator:
         if pagos_df is None or getattr(pagos_df, "empty", True):
             return {}
 
+        # Importar DataFormatters para formateo
+        from src.processors.formatters import DataFormatters
+        
         df = pagos_df.copy()
         df.columns = [self._normalize_column_name(c) for c in df.columns]
 
@@ -141,14 +144,33 @@ class PDFGenerator:
             if not obra_id or obra_id == "--":
                 continue
 
+            # Obtener valores sin formatear
+            nro_cert_raw = _clean_value(r.get(col_nro_cert)) if col_nro_cert else None
+            expediente_raw = _clean_value(r.get(col_expediente)) if col_expediente else None
+            nro_operatoria_raw = _clean_value(r.get(col_nro_operatoria)) if col_nro_operatoria else None
+            contratista_raw = _clean_value(r.get(col_contratista)) if col_contratista else None
+            estado_pago_raw = _clean_value(r.get(col_estado_pago)) if col_estado_pago else None
+            
+            # Para devengado: obtener valor y formatear
+            devengado_raw = r.get(col_devengado) if col_devengado else None
+            devengado_formatted = None
+            if devengado_raw is not None and not pd.isna(devengado_raw):
+                devengado_formatted = DataFormatters.formatear_moneda(devengado_raw)
+            
+            # Para fecha_pago: obtener valor y formatear
+            fecha_pago_raw = r.get(col_fecha_pago) if col_fecha_pago else None
+            fecha_pago_formatted = None
+            if fecha_pago_raw is not None and not pd.isna(fecha_pago_raw):
+                fecha_pago_formatted = DataFormatters.formatear_fecha(fecha_pago_raw)
+
             pago: Dict[str, Any] = {
-                "nro_certificado": _clean_value(r.get(col_nro_cert)) if col_nro_cert else None,
-                "expediente": _clean_value(r.get(col_expediente)) if col_expediente else None,
-                "nro_operatoria": _clean_value(r.get(col_nro_operatoria)) if col_nro_operatoria else None,
-                "contratista": _clean_value(r.get(col_contratista)) if col_contratista else None,
-                "estado_pago": _clean_value(r.get(col_estado_pago)) if col_estado_pago else None,
-                "devengado": _clean_value(r.get(col_devengado)) if col_devengado else None,
-                "fecha_pago": _clean_value(r.get(col_fecha_pago)) if col_fecha_pago else None,
+                "nro_certificado": nro_cert_raw,
+                "expediente": expediente_raw,
+                "nro_operatoria": nro_operatoria_raw,
+                "contratista": contratista_raw,
+                "estado_pago": estado_pago_raw,
+                "devengado": devengado_formatted,
+                "fecha_pago": fecha_pago_formatted,
                 "_sort_fecha": fecha_dt.loc[idx] if fecha_dt is not None else pd.NaT,
                 "_sort_idx": idx,
             }
