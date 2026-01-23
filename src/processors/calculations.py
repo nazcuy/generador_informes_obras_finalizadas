@@ -48,7 +48,7 @@ class CalculosFinancieros:
             if not CalculosFinancieros._esta_vacio(uvi_restante_sheet):
                 sheet_clean = CalculosFinancieros._numero_limpio(uvi_restante_sheet)
                 sheet_clean = max(0, sheet_clean)
-                return DataFormatters.formatear_numero(sheet_clean)
+                return DataFormatters.formatear_moneda_sin_decimales(sheet_clean)
 
             # 2) Fallback: cálculo por avance físico desde Excel
             if (CalculosFinancieros._esta_vacio(cantidad_uvis) or
@@ -76,7 +76,7 @@ class CalculosFinancieros:
 
             restantes = total_clean * fraccion_restante
             restantes = max(0, restantes)
-            return DataFormatters.formatear_numero(restantes)
+            return DataFormatters.formatear_moneda_sin_decimales(restantes)
             
         except Exception as e:
             logger.warning(

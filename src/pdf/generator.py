@@ -91,25 +91,17 @@ class PDFGenerator:
             return {}
 
         # Buscar columnas con nombres específicos del Excel
+        col_trata = self._pick_first_existing(
+            list(df.columns),
+            ["trata"]
+        )
         col_nro_cert = self._pick_first_existing(
             list(df.columns),
-            ["id_certificado", "nro_certificado", "numero_certificado", "certificado", "nro_cert", "nro_de_certificado"]
+            ["certificado_dga"]
         )
         col_expediente = self._pick_first_existing(
             list(df.columns),
             ["expediente", "expediente_gdeba", "exp"]
-        )
-        col_nro_operatoria = self._pick_first_existing(
-            list(df.columns),
-            ["op", "nro_operatoria", "numero_operatoria", "operatoria", "nro_de_operatoria"]
-        )
-        col_contratista = self._pick_first_existing(
-            list(df.columns),
-            ["ente", "contratista", "empresa", "adjudicatario", "proveedor"]
-        )
-        col_estado_pago = self._pick_first_existing(
-            list(df.columns),
-            ["certificado_dga", "estado_pago", "estado", "situacion", "status"]
         )
         col_devengado = self._pick_first_existing(
             list(df.columns),
@@ -145,17 +137,18 @@ class PDFGenerator:
                 continue
 
             # Obtener valores sin formatear
-            nro_cert_raw = _clean_value(r.get(col_nro_cert)) if col_nro_cert else None
+            trata_raw = _clean_value(r.get(col_trata)) if col_trata else None
+            nro_cert_raw = r.get(col_nro_cert) if col_nro_cert else None
+            nro_cert_formatted = None
+            if nro_cert_raw is not None and not pd.isna(nro_cert_raw):
+                nro_cert_formatted = DataFormatters.formatear_numero(nro_cert_raw)
             expediente_raw = _clean_value(r.get(col_expediente)) if col_expediente else None
-            nro_operatoria_raw = _clean_value(r.get(col_nro_operatoria)) if col_nro_operatoria else None
-            contratista_raw = _clean_value(r.get(col_contratista)) if col_contratista else None
-            estado_pago_raw = _clean_value(r.get(col_estado_pago)) if col_estado_pago else None
             
             # Para devengado: obtener valor y formatear
             devengado_raw = r.get(col_devengado) if col_devengado else None
             devengado_formatted = None
             if devengado_raw is not None and not pd.isna(devengado_raw):
-                devengado_formatted = DataFormatters.formatear_moneda(devengado_raw)
+                devengado_formatted = DataFormatters.formatear_moneda_sin_decimales(devengado_raw)
             
             # Para fecha_pago: obtener valor y formatear
             fecha_pago_raw = r.get(col_fecha_pago) if col_fecha_pago else None
@@ -163,14 +156,21 @@ class PDFGenerator:
             if fecha_pago_raw is not None and not pd.isna(fecha_pago_raw):
                 fecha_pago_formatted = DataFormatters.formatear_fecha(fecha_pago_raw)
 
+            # Calcular estado basado en fecha_pago e importe_devengado
+            if fecha_dt is not None and not pd.isna(fecha_dt.loc[idx]):
+                estado_calculado = "Pagado"
+            elif devengado_raw is not None and not pd.isna(devengado_raw):
+                estado_calculado = "Devengado sin pagar"
+            else:
+                estado_calculado = None
+
             pago: Dict[str, Any] = {
-                "nro_certificado": nro_cert_raw,
+                "trata": trata_raw,
+                "nro": nro_cert_formatted,
                 "expediente": expediente_raw,
-                "nro_operatoria": nro_operatoria_raw,
-                "contratista": contratista_raw,
-                "estado_pago": estado_pago_raw,
                 "devengado": devengado_formatted,
                 "fecha_pago": fecha_pago_formatted,
+                "estado_calculado": estado_calculado,
                 "_sort_fecha": fecha_dt.loc[idx] if fecha_dt is not None else pd.NaT,
                 "_sort_idx": idx,
             }
@@ -178,11 +178,7 @@ class PDFGenerator:
 
         # Ordenar cada lista de pagos por fecha descendente (si aplica)
         for obra_id in pagos_por_obra:
-            pagos_por_obra[obra_id].sort(
-                key=lambda p: (pd.isna(p["_sort_fecha"]), p["_sort_fecha"]),
-                reverse=True
-            )
-
+            pagos_por_obra[obra_id].sort(key=lambda p: p["_sort_idx"])
         return pagos_por_obra
 
     @staticmethod
@@ -330,9 +326,9 @@ class PDFGenerator:
         )
 
         # Obtener UVIs restantes del merge
-        uvis_restantes = row.get('UVI Restante', '--')
-        if pd.isna(uvis_restantes):
-            uvis_restantes = '--'
+        #uvis_restantes = DataFormatters.formatear_moneda(row.get('UVI Restante', '--'))
+        #if pd.isna(uvis_restantes):
+        #    uvis_restantes = '--'
             
         # =========================
         # NOTICIAS DESDE GOOGLE SHEETS
@@ -387,11 +383,11 @@ class PDFGenerator:
             'Monto_Convenio': DataFormatters.formatear_moneda(row.get('monto_convenio', '--')),
             'Fecha_UVI': DataFormatters.formatear_fecha(row.get('fecha_cotizacion_uvi_convenio')),
             'Total_UVI': DataFormatters.formatear_numero(row.get('cantidad_uvis', '--')),
-            'Uvis_Restantes': CalculosFinancieros.calcular_uvi_restantes(
-                row.get('cantidad_uvis', '--'),
-                row.get('porcentaje_avance_fisico', '--'),
-                uvis_restantes
-            ),
+            #'Uvis_Restantes': CalculosFinancieros.calcular_uvi_restantes(
+            #    row.get('cantidad_uvis', '--'),
+            #    row.get('porcentaje_avance_fisico', '--'),
+            #    uvis_restantes
+            #),
             'Exp_GDEBA': '' if pd.isna(row.get('expediente_gdeba')) else str(row.get('expediente_gdeba')),
             
             # Avances
@@ -422,11 +418,11 @@ class PDFGenerator:
         # Campos usados SOLO en la tabla de pagos del template
         context.update({
             'pagos_lista': pagos,
-            'Nro_Certificado': self._to_display(pagos[0].get('id_certificado')) if pagos[0] else "--",
+            'Nro': self._to_display(pagos[0].get('certificado_dga')) if pagos[0] else "--",
             'Expediente': self._to_display(pagos[0].get('expediente')) if pagos[0] else "--",
             'Nro_Operatoria': self._to_display(pagos[0].get('OP')) if pagos[0] else "--",
             'Contratista': self._to_display(pagos[0].get('ente')) if pagos[0] else "--",
-            'Estado_Pago': self._to_display(pagos[0].get('certificado_dga')) if pagos[0] else "--",
+            'Estado_Pago': self._to_display(pagos[0].get('estado_pago')) if pagos[0] else "--",
             'Devengado': DataFormatters.formatear_moneda(pagos[0].get('importe_devengado')) if pagos[0] else "--",
             'Fecha_Pago': DataFormatters.formatear_fecha(pagos[0].get('fecha_pago')) if pagos[0] else "--",
         })

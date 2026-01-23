@@ -22,23 +22,31 @@ def setup_logging(name: Optional[str] = None) -> logging.Logger:
     """
     from config.constants import Config
     
-    # Crear logger
+    # Configurar el logger raíz solo una vez
+    root_logger = logging.getLogger()
+    
+    if not root_logger.handlers:
+        # Configurar nivel
+        root_logger.setLevel(getattr(logging, Config.LOG_LEVEL.upper(), logging.INFO))
+        
+        # Crear formatter
+        formatter = logging.Formatter(Config.LOG_FORMAT)
+        
+        # Handler para consola con UTF-8 encoding para soportar emojis
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        
+        # Forzar encoding UTF-8 en Windows
+        if hasattr(console_handler.stream, 'reconfigure'):
+            console_handler.stream.reconfigure(encoding='utf-8')
+        
+        root_logger.addHandler(console_handler)
+    
+    # Crear logger para el módulo específico
     logger = logging.getLogger(name)
     
-    # Evitar duplicar handlers
-    if logger.handlers:
-        return logger
-    
-    # Configurar nivel
-    logger.setLevel(getattr(logging, Config.LOG_LEVEL.upper(), logging.INFO))
-    
-    # Crear formatter
-    formatter = logging.Formatter(Config.LOG_FORMAT)
-    
-    # Handler para consola
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    # Desactivar propagación para evitar duplicados
+    logger.propagate = True
     
     return logger
 

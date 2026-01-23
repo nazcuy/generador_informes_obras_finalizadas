@@ -78,7 +78,7 @@ GOOGLE_SHEET_ID=mi_sheet_id
 
 ## 📊 Formato de datos esperado
 
-Tu archivo Excel debe tener columnas como:
+El archivo Excel debe tener columnas como:
 - `id_obra` - ID único (ej: OTRAS-001)
 - `descripcion` - Descripción de la obra
 - `municipio`, `localidad` - Ubicación
@@ -127,4 +127,4 @@ Si tienes problemas:
 
 ---
 
-**¡Listo para generar tus informes!** 🎉
+**¡Listo para generar los informes!** 🎉

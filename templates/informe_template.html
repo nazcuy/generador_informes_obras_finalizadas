@@ -206,11 +206,12 @@
         border-radius: 5px;
         font-family: 'Encode Sans';
         background-color: #ffffff;
-        table-layout: fixed;
+        table-layout: auto;
+        min-width: 900px; /* Opcional: ancho mínimo para que no se achique demasiado */
     }
 
     .campo-pagos {
-        background-color: #d9487b; /* Color rosa del informe */
+        background-color: #d9487b;
         color: white;
         font-weight: bold;
         font-size: 10px;
@@ -218,6 +219,7 @@
         padding: 8px 4px;
         text-transform: uppercase;
         border: 1px solid #ffffff;
+        white-space: nowrap; /* Opcional: evita saltos de línea en encabezados */
     }
 
     .valor-pagos {
@@ -226,13 +228,21 @@
         font-size: 11px;
         text-align: center;
         color: #2c3e50;
-        word-wrap: break-word; /* Evita que textos largos rompan la tabla */
+        /* Elimina word-wrap: break-word; o cámbialo si quieres ajuste automático */
+        word-wrap: normal; /* Valor por defecto */
+        white-space: nowrap; /* Opcional: evita saltos en celdas */
     }
 
-    /* Resaltado opcional para la columna Estado o Contratista */
-    .valor-pagos:nth-child(5) {
+    /* Si necesitas permitir saltos de línea en celdas largas */
+    .valor-pagos.ajustar {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    /* Resaltado opcional para alguna columna */
+    .valor-pagos:nth-child(1) {
         font-weight: bold;
-        color: #00b6c9; /* Color cian para el Estado */
+        color: #00b6c9;
     }
 
     /* Alternancia de colores para filas */
@@ -270,38 +280,21 @@
                 <td class="campo-tabla">Estado:</td>
                 <td class="valor-tabla">{{ Estado }}</td>
                 <td class="icono">&gt;</td>
-                <td class="campo-tabla">Viviendas Restantes: </td>
-                <td class="valor-tabla">{{ Viviendas_Restantes }}</td>
+                <td class="campo-tabla">Total UVI: </td>
+                <td class="valor-tabla">{{ Total_UVI }}</td>
             </tr>
             <tr>
                 <td class="icono">&gt;</td>
                 <td class="campo-tabla">Municipio:</td>
                 <td class="valor-tabla">{{ Municipio }}</td>
                 <td class="icono">&gt;</td>
-                <td class="campo-tabla">Total UVI: </td>
-                <td class="valor-tabla">{{ Total_UVI }}</td>
+                <td class="campo-tabla">Monto Convenio:</td>
+                <td class="valor-tabla">{{ Monto_Convenio }}</td>
             </tr>
             <tr>
                 <td class="icono">&gt;</td>
                 <td class="campo-tabla">Localidad: </td>
                 <td class="valor-tabla">{{ Localidad }}</td>
-                <td class="icono">&gt;</td>
-                <td class="campo-tabla">UVIs Restantes: </td>
-                <td class="valor-tabla">
-                    {% if Uvis_Restantes and Uvis_Restantes != "--" %}
-                    {{ Uvis_Restantes }}
-                    {% else %}
-                    --
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td class="icono">&gt;</td>
-                <td class="campo-tabla">Monto Convenio:</td>
-                <td class="valor-tabla">{{ Monto_Convenio }}</td>
-                <td class="icono"><!-- &gt; --></td>
-                <td class="campo-tabla"><!-- Avance Físico:  --></td>
-                <td class="valor-tabla"><!-- {{ Avance_fisico }} --></td>
             </tr>
         </tbody>
     </table>
@@ -329,10 +322,9 @@
             <table class="tabla-pagos">
                 <tbody>
                     <tr>
-                        <td class="campo-pagos">Nro Certificado</td>
+                        <td class="campo-pagos">Trata</td>
+                        <td class="campo-pagos">Nro</td>
                         <td class="campo-pagos">Expediente</td>
-                        <td class="campo-pagos">Nro de Operatoria</td>
-                        <td class="campo-pagos">Contratista</td>
                         <td class="campo-pagos">Estado</td>
                         <td class="campo-pagos">Devengado</td>
                         <td class="campo-pagos">Fecha de Pago</td>
@@ -340,11 +332,10 @@
                     {% if pagos_lista %}
                         {% for pago in pagos_lista %}
                     <tr>
-                        <td class="valor-pagos">{{ pago.nro_certificado or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.trata or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.nro or "--" }}</td>
                         <td class="valor-pagos">{{ pago.expediente or "--" }}</td>
-                        <td class="valor-pagos">{{ pago.nro_operatoria or "--" }}</td>
-                        <td class="valor-pagos">{{ pago.contratista or "--" }}</td>
-                        <td class="valor-pagos">{{ pago.estado_pago or "--" }}</td>
+                        <td class="valor-pagos">{{ pago.estado_calculado or "--" }}</td>
                         <td class="valor-pagos">{{ pago.devengado or "--" }}</td>
                         <td class="valor-pagos">{{ pago.fecha_pago or "--" }}</td>
                     </tr>
