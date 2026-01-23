@@ -10,8 +10,6 @@ python -m venv env
 # Activar entorno virtual
 # Windows:
 env\Scripts\activate
-# Linux/macOS:
-source env/bin/activate
 
 # Instalar dependencias
 pip install -r requirements.txt
@@ -19,8 +17,6 @@ pip install -r requirements.txt
 
 ### 2. Configurar wkhtmltopdf
 - **Windows**: Descargar desde https://wkhtmltopdf.org/downloads.html
-- **Linux**: `sudo apt install wkhtmltopdf`
-- **macOS**: `brew install wkhtmltopdf`
 
 ### 3. Configurar datos
 ```bash

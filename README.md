@@ -1,6 +1,6 @@
 # 🚀 Generador de Informes de Obras Públicas
 
-Sistema automatizado para la generación masiva de informes PDF profesionales para obras de infraestructura y pavimentación paralizadas.
+Sistema automatizado para la generación masiva de informes PDF profesionales para obras de infraestructura y pavimentación finalizadas.
 
 ## 📋 Descripción
 
@@ -61,8 +61,6 @@ pip install -r requirements.txt
 ```bash
 # Descargar e instalar desde: https://wkhtmltopdf.org/downloads.html
 # Windows: Instalar en C:\Program Files\wkhtmltopdf\
-# Linux: sudo apt install wkhtmltopdf
-# macOS: brew install wkhtmltopdf
 ```
 
 ### 3. Configurar Variables de Entorno
@@ -204,21 +202,8 @@ Este proyecto fue desarrollado como solución para automatización de procesos g
 
 ## 📝 Licencia
 
-Este proyecto fue desarrollado para uso gubernamental y educativo.
+Este proyecto fue desarrollado para uso gubernamental.
 
 ## 👨‍💻 Autor
 
-**MiniMax Agent** - Sistema de Automatización de Informes
-
----
-
-### 🎯 **¿Necesitas automatizar procesos similares?**
-
-Este proyecto demuestra capacidades en:
-- ✅ **Automatización de Procesos**
-- ✅ **Integración de APIs**
-- ✅ **Procesamiento de Datos**
-- ✅ **Generación de Documentos**
-- ✅ **Desarrollo de Software**
-
-**¿Tienes un proyecto similar? ¡Contáctame para consultorio técnico!**
+**Nicolás Azcuy** - Sistema de Automatización de Informes
