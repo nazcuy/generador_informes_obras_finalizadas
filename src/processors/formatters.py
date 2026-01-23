@@ -60,7 +60,7 @@ class DataFormatters:
     
     @staticmethod
     def formatear_porcentaje(value: Union[str, float, int]) -> str:
-        """Formatea número como porcentaje: 50,00%"""
+        """Formatea número como porcentaje (valor ya es porcentaje): 50% o 50,25%"""
         if DataFormatters._esta_vacio(value):
             return "--"
         
@@ -71,15 +71,47 @@ class DataFormatters:
             
             float_value = float(value)
             
-            # Si está entre 0 y 1, multiplicar por 100
-            if 0 <= float_value <= 1:
-                float_value *= 100
-            
             # Formatear con dos decimales
-            return f"{float_value:.2f}".replace('.', ',') + "%"
+            formatted = f"{float_value:.2f}".replace('.', ',')
+            
+            # Si termina en ,00, remover los decimales
+            if formatted.endswith(",00"):
+                formatted = formatted[:-3]
+            
+            return formatted + "%"
             
         except (ValueError, TypeError) as e:
             logger.warning(f"Error formateando porcentaje: {e} | Valor: {value}")
+            return str(value)
+    
+    @staticmethod
+    def formatear_porcentaje_desde_decimal(value: Union[str, float, int]) -> str:
+        """Formatea número como porcentaje (valor en formato decimal 0-100): 50% o 50,25%"""
+        if DataFormatters._esta_vacio(value):
+            return "--"
+        
+        try:
+            # Limpiar y convertir a float
+            if isinstance(value, str):
+                value = value.strip().replace('%', '').replace(',', '.')
+            
+            float_value = float(value)
+            
+            # Si está entre 0 y 100, multiplicar por 100
+            if 0 <= float_value < 100:
+                float_value *= 100
+            
+            # Formatear con dos decimales
+            formatted = f"{float_value:.2f}".replace('.', ',')
+            
+            # Si termina en ,00, remover los decimales
+            if formatted.endswith(",00"):
+                formatted = formatted[:-3]
+            
+            return formatted + "%"
+            
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Error formateando porcentaje desde decimal: {e} | Valor: {value}")
             return str(value)
     
     @staticmethod

@@ -93,7 +93,7 @@ class PDFGenerator:
         # Buscar columnas con nombres específicos del Excel
         col_trata = self._pick_first_existing(
             list(df.columns),
-            ["trata"]
+            ["trata", "Trata del Expediente"]
         )
         col_nro_cert = self._pick_first_existing(
             list(df.columns),
@@ -325,6 +325,14 @@ class PDFGenerator:
             obra_id=row.get('id_obra', '')
         )
 
+        # Detectar nombres de columnas variantes para avance_financiero
+        avance_fin_col = None
+        for col in row.index:
+            col_lower = str(col).strip().lower()
+            if col_lower in ['avance_financiero', 'avance financiero', 'avance_financiero', 'avance financiero']:
+                avance_fin_col = col
+                break
+
         # Obtener UVIs restantes del merge
         #uvis_restantes = DataFormatters.formatear_moneda(row.get('UVI Restante', '--'))
         #if pd.isna(uvis_restantes):
@@ -333,7 +341,7 @@ class PDFGenerator:
         # =========================
         # NOTICIAS DESDE GOOGLE SHEETS
         # =========================
-        try:
+        """try:
             noticias = SheetsReader.obtener_noticias_por_obra(
                 sheet_id=Config.GOOGLE_SHEET_ID_NOTICIAS,
                 hoja_noticias=Config.GOOGLE_SHEET_NAME_NOTICIAS, 
@@ -341,7 +349,7 @@ class PDFGenerator:
             )
         except Exception as e:
             logger.warning(f"[!] Error trayendo noticias para {row.get('id_obra')}: {e}")
-            noticias = []
+            noticias = []"""
 
         context = {
             # Recursos visuales
@@ -373,7 +381,7 @@ class PDFGenerator:
             'Localidad': row.get('localidad', '--'),
             'Modalidad': row.get('modalidad', '--'),
             'Programa': 'Programa COMPLETAR',
-            'noticias': noticias,
+            """'noticias': noticias,"""
             
             # Códigos
             'Cod_emprendimiento': DataFormatters.formatear_integer(row.get('emprendimiento_incluidos', '--')),
@@ -394,7 +402,7 @@ class PDFGenerator:
             'Avance_fisico': DataFormatters.formatear_porcentaje(row.get('porcentaje_avance_fisico', '--')),
             'Avance_Restante': CalculosFinancieros.calculate_progreso_restante(row.get('porcentaje_avance_fisico', '--')
             ),
-            'Avance_financiero': DataFormatters.formatear_porcentaje(row.get('avance_financiero', '--')),
+            'Avance_financiero': DataFormatters.formatear_porcentaje_desde_decimal(row.get(avance_fin_col, '--') if avance_fin_col else '--'),
             
             # Montos
             """ 'Saldo_UVI_Pendiente': saldo_uvi_pendiente,
