@@ -245,6 +245,16 @@
         color: #00b6c9;
     }
 
+    .valor-total {
+        background-color: #919191;
+        font-weight: bold;
+        color: #2c3e50;
+        text-align: left;
+        padding: 10px 5px;
+        font-size: 11px;
+        text-transform: uppercase;
+    }
+
     /* Alternancia de colores para filas */
     .tabla-pagos tbody tr:nth-child(even) {
         background-color: #f9f9f9;
@@ -340,9 +350,28 @@
                         <td class="valor-pagos">{{ pago.fecha_pago or "--" }}</td>
                     </tr>
                         {% endfor %}
+                    <tr>
+                        <td class="valor-total" colspan="7">Total de pagos</td>
+                    </tr>
+                    <tr>
+                        <td class="campo-pagos"></td>
+                        <td class="campo-pagos"></td>
+                        <td class="campo-pagos"></td>
+                        <td class="campo-pagos"></td>
+                        <td class="campo-pagos">{{ total_pagos }}</td>
+                        <td class="campo-pagos"></td>
+                    </tr>
                     {% else %}
                     <tr>
                         <td class="valor-pagos" colspan="7">No hay registros de pagos disponibles.</td>
+                    </tr>
+                    <tr>
+                        <td class="campo-pagos">Trata</td>
+                        <td class="campo-pagos">Nro</td>
+                        <td class="campo-pagos">Expediente</td>
+                        <td class="campo-pagos">Estado</td>
+                        <td class="campo-pagos">Devengado</td>
+                        <td class="campo-pagos">Fecha de Pago</td>
                     </tr>
                     {% endif %}
                 </tbody>
