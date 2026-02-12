@@ -351,15 +351,12 @@
                     </tr>
                         {% endfor %}
                     <tr>
-                        <td class="valor-total" colspan="7">Total de pagos</td>
-                    </tr>
-                    <tr>
-                        <td class="campo-pagos"></td>
-                        <td class="campo-pagos"></td>
-                        <td class="campo-pagos"></td>
-                        <td class="campo-pagos"></td>
-                        <td class="campo-pagos">{{ total_pagos }}</td>
-                        <td class="campo-pagos"></td>
+                        <td class="valor-pagos" style="font-weight: bold;">Total</td>
+                        <td class="valor-pagos"></td>
+                        <td class="valor-pagos"></td>
+                        <td class="valor-pagos"></td>
+                        <td class="valor-pagos" style="font-weight: bold;">{% set total = pagos_lista | map(attribute='devengado') | map('float') | sum %}{{ total }}</td>
+                        <td class="valor-pagos"></td>
                     </tr>
                     {% else %}
                     <tr>
