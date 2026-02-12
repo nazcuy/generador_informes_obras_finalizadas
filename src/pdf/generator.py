@@ -144,11 +144,11 @@ class PDFGenerator:
                 nro_cert_formatted = DataFormatters.formatear_numero(nro_cert_raw)
             expediente_raw = _clean_value(r.get(col_expediente)) if col_expediente else None
             
-            # Para devengado: obtener valor y formatear
+            # Para devengado: obtener valor y formatear (con dos decimales)
             devengado_raw = r.get(col_devengado) if col_devengado else None
             devengado_formatted = None
             if devengado_raw is not None and not pd.isna(devengado_raw):
-                devengado_formatted = DataFormatters.formatear_moneda_sin_decimales(devengado_raw)
+                devengado_formatted = DataFormatters.formatear_moneda(devengado_raw)
             
             # Para fecha_pago: obtener valor y formatear
             fecha_pago_raw = r.get(col_fecha_pago) if col_fecha_pago else None
@@ -169,6 +169,7 @@ class PDFGenerator:
                 "nro": nro_cert_formatted,
                 "expediente": expediente_raw,
                 "devengado": devengado_formatted,
+                "devengado_raw": float(devengado_raw) if (devengado_raw is not None and not pd.isna(devengado_raw)) else 0.0,
                 "fecha_pago": fecha_pago_formatted,
                 "estado_calculado": estado_calculado,
                 "_sort_fecha": fecha_dt.loc[idx] if fecha_dt is not None else pd.NaT,

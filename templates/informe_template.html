@@ -355,7 +355,7 @@
                         <td class="valor-pagos"></td>
                         <td class="valor-pagos"></td>
                         <td class="valor-pagos"></td>
-                        <td class="valor-pagos" style="font-weight: bold;">{% set total = pagos_lista | map(attribute='devengado') | map('float') | sum %}{{ total }}</td>
+                        <td class="valor-pagos" style="font-weight: bold;">{{ (pagos_lista | map(attribute='devengado_raw') | sum) | formatear_moneda }}</td>
                         <td class="valor-pagos"></td>
                     </tr>
                     {% else %}

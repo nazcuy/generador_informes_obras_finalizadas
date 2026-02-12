@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional
 
 from config.constants import FilePaths
 from utils.helpers import setup_logging
+from src.processors.formatters import DataFormatters
 
 logger = setup_logging(__name__)
 
@@ -49,6 +50,11 @@ class TemplateManager:
         
         # Filtro para dividir listas en grupos
         self.env.filters['dividir'] = self._divide_in_groups
+
+        # Filtros para formateo de datos
+        self.env.filters['formatear_moneda'] = DataFormatters.formatear_moneda
+        self.env.filters['formatear_moneda_sin_decimales'] = DataFormatters.formatear_moneda_sin_decimales
+        self.env.filters['formatear_numero'] = DataFormatters.formatear_numero
         
         logger.info("[OK] Filtros personalizados registrados")
     
