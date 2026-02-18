@@ -49,7 +49,7 @@
         border-radius: 5px;
     }
     .icono-flecha {
-        height: 18px;
+        height: 20px;
         vertical-align: top;
         margin-right: 6px;
         margin-left: 25px;
@@ -82,16 +82,18 @@
     .tabla-informe {
         background-color: #e6e5e5;
         border: none;
-        padding: 5px 0;
-        margin: 20px auto 30px auto;
+        padding: 5px 8px;
+        margin: 20px auto 20px auto;
+        width: 80%; /* mismo ancho fijo que la imagen */
         max-width: 80%;
-        width: 80%;
+        min-width: 80%;
         border-radius: 5px;
-        table-layout: auto;
-        border-collapse: separate;
+        table-layout: fixed; /* distribuir columnas proporcionalmente */
+        border-collapse: collapse;
         border-spacing: 0px;
         font-family: 'Encode Sans';
-        font-size: 20px;
+        font-size: 30px;
+        box-sizing: border-box;
     }
     .tabla-informe tr {
         min-height: 35px;
@@ -100,34 +102,41 @@
     .tabla-informe td {
         border: none;
         border-collapse: collapse;
+        vertical-align: top;
     }
     .tabla-informe .icono {
-        padding: 3px 10px;
+        padding: 2px 4px;
         color: #d9487b;
         text-align: center;
         font-weight: bold;
-        font-size: 30px;
+        font-size: 25px;
         width: 25px;
+        vertical-align: middle;
+        line-height: 1;
     }
+
     .tabla-informe .campo-tabla {
         width: 30ch;
         max-width: 30ch;
-        font-weight: normal;
-        font-size: 12px;
+        font-weight: italic;
+        font-size: 15px;
+        vertical-align: middle;
         color: #2c3e50;
-        padding: 3px 10px;
+        padding: 2px 8px;
+        white-space: nowrap;
     }
     
     .tabla-informe .valor-tabla {
         display: block;
         max-width: 100%;
         white-space: normal;
+        vertical-align: bottom;
         overflow-wrap: break-word;
         word-break: break-word;
         font-weight: bold;
-        font-size: 12px;
+        font-size: 15px;
         text-align: left;
-        padding: 3px 10px;
+        padding: 2px 8px;
     }
     .footer {
         width: 100%;
@@ -208,7 +217,7 @@
         font-family: 'Encode Sans';
         background-color: #ffffff;
         table-layout: auto;
-        min-width: 900px; /* Opcional: ancho mínimo para que no se achique demasiado */
+        min-width: 900px;
     }
 
     .campo-pagos {
@@ -220,7 +229,7 @@
         padding: 8px 4px;
         text-transform: uppercase;
         border: 1px solid #ffffff;
-        white-space: nowrap; /* Opcional: evita saltos de línea en encabezados */
+        white-space: nowrap;
     }
 
     .valor-pagos {
@@ -229,12 +238,10 @@
         font-size: 11px;
         text-align: center;
         color: #2c3e50;
-        /* Elimina word-wrap: break-word; o cámbialo si quieres ajuste automático */
-        word-wrap: normal; /* Valor por defecto */
-        white-space: nowrap; /* Opcional: evita saltos en celdas */
+        word-wrap: normal;
+        white-space: nowrap;
     }
 
-    /* Si necesitas permitir saltos de línea en celdas largas */
     .valor-pagos.ajustar {
         white-space: normal;
         word-wrap: break-word;
@@ -247,10 +254,10 @@
     }
 
     .valor-total {
-        background-color: #919191;
+        background-color: #D1D1D1;
         font-weight: bold;
-        color: #2c3e50;
-        text-align: left;
+        color: #2C3E50;
+        text-align: center;
         padding: 10px 5px;
         font-size: 11px;
         text-transform: uppercase;
@@ -306,6 +313,9 @@
                 <td class="icono">&gt;</td>
                 <td class="campo-tabla">Localidad: </td>
                 <td class="valor-tabla">{{ Localidad }}</td>
+                <td class="icono"></td>
+                <td class="campo-tabla"></td>
+                <td class="valor-tabla"></td>
             </tr>
         </tbody>
     </table>
@@ -352,12 +362,12 @@
                     </tr>
                         {% endfor %}
                     <tr>
-                        <td class="valor-pagos" style="font-weight: bold;">Total</td>
-                        <td class="valor-pagos"></td>
-                        <td class="valor-pagos"></td>
-                        <td class="valor-pagos"></td>
-                        <td class="valor-pagos" style="font-weight: bold;">{{ (pagos_lista | map(attribute='devengado_raw') | sum) | formatear_moneda }}</td>
-                        <td class="valor-pagos"></td>
+                        <td class="valor-total" style="font-weight: bold;">Total</td>
+                        <td class="valor-total"></td>
+                        <td class="valor-total"></td>
+                        <td class="valor-total"></td>
+                        <td class="valor-total" style="font-weight: bold;">{{ (pagos_lista | map(attribute='devengado_raw') | sum) | formatear_moneda }}</td>
+                        <td class="valor-total"></td>
                     </tr>
                     {% else %}
                     <tr>
