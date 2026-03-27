@@ -391,7 +391,7 @@ class PDFGenerator:
             # Información financiera
             'Monto_Convenio': DataFormatters.formatear_moneda(row.get('monto_convenio', '--')),
             'Fecha_UVI': DataFormatters.formatear_fecha(row.get('fecha_cotizacion_uvi_convenio')),
-            'Total_UVI': DataFormatters.formatear_numero(row.get('cantidad_uvis', '--')),
+            'Total_UVI': DataFormatters.formatear_numero_con_decimales(row.get('cantidad_uvis', '--')),
             #'Uvis_Restantes': CalculosFinancieros.calcular_uvi_restantes(
             #    row.get('cantidad_uvis', '--'),
             #    row.get('porcentaje_avance_fisico', '--'),

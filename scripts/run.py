@@ -161,7 +161,7 @@ def main():
             
             # Formatear campos específicos
             if 'Total_UVI' in obra:
-                obra_procesada['Total_UVI'] = DataFormatters.formatear_numero(obra['Total_UVI'])
+                obra_procesada['Total_UVI'] = DataFormatters.formatear_numero_con_decimales(obra['Total_UVI'])
             
             # Calcular avance restante si no existe
             if 'Avance_fisico' in obra and 'Avance_Restante' not in obra:

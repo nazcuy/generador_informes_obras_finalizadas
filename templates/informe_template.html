@@ -79,6 +79,16 @@
         margin-top: 10px;
         margin-left: 7%;
     }
+    .memoria-extra {
+        color: #d9487b;
+        font-weight: bold;
+        text-align: left;
+        font-size: 15px;
+        padding-top: 20px;
+        padding-bottom: 5px;
+        margin-top: 15px;
+        margin-left: 7%;
+    }
     .tabla-informe {
         background-color: #e6e5e5;
         border: none;
@@ -190,23 +200,43 @@
         page-break-before: always; 
     }
     .tabla-imagenes {
-        width: 100%;
+        width: 94%;
+        max-width: 94%;
         border-collapse: collapse;
-        margin-top: 60px;
-        padding-top: 60px;
+        margin: 8px auto 18px auto;
+        padding-top: 6px;
+        page-break-after: avoid;
+        page-break-inside: avoid;
     }
     .tabla-imagenes td {
         width: 50%;
-        padding: 10px;
-        vertical-align: top;
+        padding: 4px;
+        vertical-align: middle;
         text-align: center;
     }
-    .imagen-extra {
+    .tabla-imagenes .imagen-una-columna td {
         width: 100%;
+        padding: 8px;
+    }
+    .imagen-extra {
+        max-width: 95%;
+        width: auto;
         height: auto;
         border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         display: block;
+        max-height: 480px;
+        margin: 0 auto;
+        object-fit: contain;
+        page-break-inside: avoid;
+    }
+    .tabla-imagenes td { padding: 2px; }
+    .tabla-imagenes tr td { text-align: center; }
+    .memoria-extra { page-break-after: avoid; }
+
+
+    .tabla-imagenes td {
+        vertical-align: middle;
     }
     /* Estilos para la Tabla de Pagos */
     .tabla-pagos {
@@ -385,5 +415,37 @@
                 </tbody>
             </table>
         </div>
+        {% if Imagenes_Extra %}
+        <div class="page-break"></div>
+        <div class="memoria-extra">
+            <img src="{{ doble_flecha }}" class="icono-flecha" alt=">>">
+            RELEVAMIENTO FOTOGRÁFICO
+        </div>
+    {% for grupo in Imagenes_Extra | dividir(4) %}
+        {% if not loop.first %}
+        <div class="page-break"></div>
+        {% endif %}
+        <table class="tabla-imagenes" style="margin-top: 25px;{% if grupo | length <= 2 %} max-width: 70%;{% endif %}">
+            {% if grupo | length <= 2 %}
+                {% for img in grupo %}
+            <tr>
+                <td style="width: 100%; text-align: center; padding: 10px;">
+                    <img src="{{ img }}" class="imagen-extra" alt="Imagen adicional">
+                </td>
+            </tr>
+                {% endfor %}
+            {% else %}
+                {% for img in grupo %}
+                    {% if loop.index0 % 2 == 0 %}<tr>{% endif %}
+                    <td style="width: 50%; padding: 10px; text-align: center;">
+                        <img src="{{ img }}" class="imagen-extra" alt="Imagen adicional {{ loop.index }}">
+                    </td>
+                    {% if loop.index % 2 == 0 %}</tr>{% endif %}
+                {% endfor %}
+                {% if grupo | length % 2 == 1 %}</tr>{% endif %}
+            {% endif %}
+        </table>
+    {% endfor %}
+    {% endif %}    
     </body>
 </html>

@@ -137,6 +137,28 @@ class DataFormatters:
             return str(value)
     
     @staticmethod
+    def formatear_numero_con_decimales(value: Union[str, float, int]) -> str:
+        """Formatea número con separadores de miles y decimales: 1.234.567,89"""
+        if DataFormatters._esta_vacio(value):
+            return "--"
+        
+        try:
+            # Limpiar string si es necesario
+            if isinstance(value, str):
+                value = value.replace('.', '').replace(',', '.')
+            
+            # Convertir a float
+            float_value = float(value)
+            
+            # Formatear con dos decimales
+            formatted = f"{float_value:,.2f}"
+            return formatted.replace(",", "X").replace('.', ',').replace('X', '.')
+            
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Error formateando número con decimales: {e} | Valor: {value}")
+            return str(value)
+    
+    @staticmethod
     def formatear_integer(value: Union[str, float, int]) -> str:
         """Formatea número como entero sin separadores: 1234567"""
         if DataFormatters._esta_vacio(value):

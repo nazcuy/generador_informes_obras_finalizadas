@@ -55,6 +55,7 @@ class TemplateManager:
         self.env.filters['formatear_moneda'] = DataFormatters.formatear_moneda
         self.env.filters['formatear_moneda_sin_decimales'] = DataFormatters.formatear_moneda_sin_decimales
         self.env.filters['formatear_numero'] = DataFormatters.formatear_numero
+        self.env.filters['formatear_numero_con_decimales'] = DataFormatters.formatear_numero_con_decimales
         
         logger.info("[OK] Filtros personalizados registrados")
     

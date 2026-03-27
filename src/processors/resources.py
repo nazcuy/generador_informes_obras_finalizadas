@@ -131,6 +131,7 @@ class ResourceProcessor:
         # Buscar imagen principal (ID_obra.jpg o .png)
         principal_paths = [
             images_dir / f"{obra_id}.jpg",
+            images_dir / f"{obra_id}.jpeg",
             images_dir / f"{obra_id}.png"
         ]
         
@@ -143,7 +144,7 @@ class ResourceProcessor:
         for file_path in sorted(images_dir.iterdir()):
             if (file_path.is_file() and 
                 file_path.name.startswith(f"{obra_id}_") and
-                file_path.suffix.lower() in ['.jpg', '.png']):
+                file_path.suffix.lower() in ['.jpg', '.jpeg', '.png']):
                 
                 uri = ResourceProcessor.image_to_data_uri(file_path)
                 if uri:
