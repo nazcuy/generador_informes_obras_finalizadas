@@ -334,10 +334,6 @@ class PDFGenerator:
                 avance_fin_col = col
                 break
 
-        # Obtener UVIs restantes del merge
-        #uvis_restantes = DataFormatters.formatear_moneda(row.get('UVI Restante', '--'))
-        #if pd.isna(uvis_restantes):
-        #    uvis_restantes = '--'
             
         # =========================
         # NOTICIAS DESDE GOOGLE SHEETS

@@ -69,7 +69,7 @@ class Config:
     
     # Configuración de procesamiento
     OUTPUT_DIR = os.getenv("OUTPUT_DIR", OUTPUT_DIR)
-    DEFAULT_FILTER = "OTRAS"  # OTRAS, CONVE, TODAS
+    DEFAULT_FILTER = "CONVE"  # OTRAS, CONVE, TODAS
     
     # Configuración de logging
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
